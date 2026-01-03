@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/registration_hotel
+    username: postgres
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none  # 🔑 Hibernate will auto-create/update tables (fixes "Cannot resolve table")
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true  # Allows Flyway to work with existing database
+    locations: classpath:db/migration  # Default location for migration scripts
+
+  mail:
+    host: localhost
+    port: 1025
+    username: user
+    password: user
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connection-timeout: 5000
+          timeout: 3000
+          write-timeout: 5000
