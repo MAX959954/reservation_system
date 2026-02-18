@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface InvoiceRepository extends JpaRepository<Invoice , Long> {
     Optional<Invoice> findByPDFPath(String pdf_path);
     Optional<Invoice> findByIssued_at(LocalDateTime issued_at);
+    Optional<Invoice> findByBooking_Id(Long bookingId);
 }

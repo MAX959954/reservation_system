@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,9 +32,9 @@ public class Invoice {
     private Booking booking ;
 
     private String pdf_path ;
-    private LocalDateTime issued_at;
+    private LocalDate issued_at;
 
-    public Invoice(Booking booking, String pdf_path, LocalDateTime issued_at) {
+    public Invoice(Booking booking, String pdf_path, LocalDate issued_at) {
         this.booking = booking;
         this.pdf_path = pdf_path;
         this.issued_at = issued_at;

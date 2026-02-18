@@ -1,5 +1,6 @@
 package com.example.reservation_system.business_logic.room;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,12 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
+    public ResponseEntity<Room> createRoom(@Valid @RequestBody Room room) {
         return ResponseEntity.ok(roomService.createRoom(room));
     }
 
     @PostMapping
-    public ResponseEntity<Room> updateRoom(@PathVariable Long id ,@RequestBody Room room) {
+    public ResponseEntity<Room> updateRoom(@PathVariable Long id , @Valid @RequestBody Room room) {
         return ResponseEntity.ok(roomService.updateRoom(id , room));
     }
 

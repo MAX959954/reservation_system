@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -15,8 +16,10 @@ import java.util.Collections;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-public class AppUser implements UserDetails {
 
+//UserDetails - interface from Spring Security for basic user authentication 
+// and authorization
+public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // simpler and consistent
     private Long id;
@@ -24,9 +27,13 @@ public class AppUser implements UserDetails {
     @Setter
     private String username;
     @Setter
+    private String full_name;
+    @Setter
     private String email;
     @Setter
     private String password;
+    @Setter
+    private LocalDate created_at;
 
     @Setter
     private boolean locked = false;
@@ -36,17 +43,20 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private AppUserRole userRole;
 
-    public AppUser(String username, String email, String password, AppUserRole userRole) {
+    public AppUser(String username,  String full_name , String email, String password , LocalDate created_at , AppUserRole userRole) {
         this.username = username;
+        this.full_name = full_name;
         this.email = email;
         this.password = password;
+        this.created_at = created_at;
         this.userRole = userRole;
     }
 
+    //define the role for user (ROLE_ prefix required for hasRole() in @PreAuthorize)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(
-                new SimpleGrantedAuthority(userRole.toString())
+                new SimpleGrantedAuthority("ROLE_" + userRole.name())
         );
     }
 

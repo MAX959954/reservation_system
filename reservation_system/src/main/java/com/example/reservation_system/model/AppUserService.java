@@ -1,12 +1,7 @@
 package com.example.reservation_system.model;
 
-import com.example.reservation_system.security.PasswordConfig;
-import com.example.reservation_system.security.PasswordEncoderUtil;
 import com.example.reservation_system.token.ConfirmationToken;
-import com.example.reservation_system.token.ConfirmationTokenRepository;
 import com.example.reservation_system.token.ConfirmationTokenService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -58,6 +53,15 @@ public class AppUserService implements UserDetailsService {
         }else {
             throw new UsernameNotFoundException("Not found this email" + email);
         }
+    }
+
+    public AppUser findById(Long userId) {
+        return appUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User not found with id: " + userId));
+    }
+
+    public Optional<AppUser> findByUsername(String username) {
+        return appUserRepository.findByUsername(username);
     }
 
     public String signUpUser(AppUser appUser) {

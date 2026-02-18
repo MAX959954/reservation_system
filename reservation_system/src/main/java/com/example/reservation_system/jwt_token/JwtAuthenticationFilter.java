@@ -25,16 +25,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String SECRET_KEY = "your-secret-key";
 
     @Autowired
-    public void JwtAuthenticationFilter (AppUserService appUserService) {
+    public JwtAuthenticationFilter (AppUserService appUserService) {
         this.appUserService = appUserService;
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException{
+    protected boolean shouldNotFilter(@SuppressWarnings("null") HttpServletRequest request) throws ServletException{
         String path = request.getServletPath();
         return path.equals("/api/auth/login") || path.startsWith("/api/v1/registration");
     }
 
+    @SuppressWarnings({ "null", "deprecation" })
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

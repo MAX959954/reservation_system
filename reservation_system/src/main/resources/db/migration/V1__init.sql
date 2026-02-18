@@ -247,35 +247,6 @@ CREATE TRIGGER update_bookings_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
--- ============================================
--- SEED ROOMS
--- ============================================
-INSERT INTO rooms (number, name, type, capacity, base_price, price_per_night, status)
-VALUES
-('101', 'Standard Room 101', 'STANDARD', 2, 80, 80.00, 'AVAILABLE'),
-('102', 'Standard Room 102', 'STANDARD', 2, 80, 80.00, 'AVAILABLE'),
-('201', 'Deluxe Room 201', 'DELUXE', 3, 120, 120.00, 'AVAILABLE'),
-('202', 'Deluxe Room 202', 'DELUXE', 3, 120, 120.00, 'AVAILABLE'),
-('301', 'Suite 301', 'SUITE', 4, 200, 200.00, 'AVAILABLE')
-ON CONFLICT (number) DO NOTHING;
-
--- ============================================
--- SEED ROOM INVENTORY (365 DAYS)
--- ============================================
-INSERT INTO room_inventory (room_id, night_date, booked_count, allotment)
-SELECT
-    r.id,
-    gs.night_date,
-    0 AS booked_count,
-    1 AS allotment
-FROM rooms r
-         CROSS JOIN generate_series(
-                CURRENT_DATE,
-                CURRENT_DATE + INTERVAL '364 days',
-                INTERVAL '1 day'
-                    ) AS gs(night_date)
-    ON CONFLICT (room_id, night_date) DO NOTHING;
-
 
 
 

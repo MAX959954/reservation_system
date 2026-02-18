@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/admin/bookings")
@@ -31,7 +31,7 @@ public class BookingController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id , LocalDateTime newCheckIn , LocalDateTime newCheckedOut ){
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long id , LocalDate newCheckIn , LocalDate newCheckedOut ){
         return ResponseEntity.ok(bookingService.updateBooking(id , newCheckIn , newCheckedOut ));
     }
 

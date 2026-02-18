@@ -3,6 +3,7 @@ package com.example.reservation_system.business_logic.admin_dashboard;
 import com.example.reservation_system.business_logic.bookings.Booking;
 import com.example.reservation_system.business_logic.bookings.BookingRepository;
 import com.example.reservation_system.business_logic.payments.PaymentRepository;
+import com.example.reservation_system.business_logic.pricing.PricingService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +17,14 @@ public class AdminBookingService {
 
     private final BookingRepository bookingRepository;
     private final PaymentRepository paymentRepository;
+    private final PricingService pricingService;
 
     public AdminBookingService(BookingRepository bookingRepository,
-                               PaymentRepository paymentRepository) {
+                               PaymentRepository paymentRepository,
+                               PricingService pricingService) {
         this.bookingRepository = bookingRepository;
         this.paymentRepository = paymentRepository;
+        this.pricingService = pricingService;
     }
 
     @Transactional
@@ -37,16 +41,11 @@ public class AdminBookingService {
         }
 
         // ✔ Booking expects LocalDate, not LocalDateTime
-        booking.setCheck_in(LocalDateTime.from(newCheckIn));
-        booking.setCheck_out(LocalDateTime.from(newCheckOut));
+        booking.setCheck_in(LocalDate.from(newCheckIn));
+        booking.setCheck_out(LocalDate.from(newCheckOut));
 
-        long nights = ChronoUnit.DAYS.between(newCheckIn, newCheckOut);
-
-        BigDecimal newPrice = booking.getRoom()
-                .getPricePerNight()
-                .multiply(BigDecimal.valueOf(nights));
-
-        // ✔ Method name must exist in Booking
+        // Recalculate total using seasonal rates and booking's rooms (dates already set above)
+        BigDecimal newPrice = pricingService.calculateTotalForBooking(booking);
         booking.setTotal_amount(newPrice);
 
         return bookingRepository.save(booking);
@@ -59,7 +58,7 @@ public class AdminBookingService {
 
         long hoursBeforeCheckIn = ChronoUnit.HOURS.between(
                 LocalDateTime.now(),
-                booking.getCheck_in()
+                booking.getCheck_in().atStartOfDay()
         );
 
         BigDecimal refund;

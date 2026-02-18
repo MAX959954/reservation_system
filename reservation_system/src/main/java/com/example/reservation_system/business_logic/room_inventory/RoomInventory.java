@@ -4,7 +4,7 @@ import com.example.reservation_system.business_logic.room.Room;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "room_inventory")
@@ -18,7 +18,7 @@ public class RoomInventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime night_date;
+    private LocalDate night_date;
 
     private int booked_count;
 
@@ -32,8 +32,8 @@ public class RoomInventory {
     )
     private Room room;
 
-    public RoomInventory(LocalDateTime night_date, int booked_count, int allotment) {
-        this.night_date = night_date;
+    public RoomInventory(LocalDate night_date, int booked_count, int allotment) {
+        this.night_date = LocalDate.from(night_date);
         this.booked_count = booked_count;
         this.allotment = allotment;
     }

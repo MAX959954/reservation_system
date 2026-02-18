@@ -3,7 +3,7 @@ package com.example.reservation_system.business_logic.payments;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 public class PaymentService {
@@ -27,7 +27,7 @@ public class PaymentService {
         if (payment.getProvider() == null || payment.getProvider().isBlank()){
             throw new IllegalArgumentException("Provider must not be empty");
         }
-        payment.setCreated_at(LocalDateTime.now());
+        payment.setCreated_at(LocalDate.now());
         return paymentRepository.save(payment);
     }
 

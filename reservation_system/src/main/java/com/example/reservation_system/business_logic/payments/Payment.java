@@ -4,6 +4,7 @@ import com.example.reservation_system.business_logic.bookings.Booking;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +28,7 @@ public class Payment {
 
     private int amount;
 
-    private LocalDateTime created_at ;
+    private LocalDate created_at ;
 
     @Enumerated(EnumType.STRING)
     private PayementStatus status;
@@ -41,7 +42,7 @@ public class Payment {
 
     private Booking booking;
 
-    public Payment(String provider , String provider_ref , int amount ,PayementStatus status , LocalDateTime created_at  ) {
+    public Payment(String provider , String provider_ref , int amount ,PayementStatus status , LocalDate created_at  ) {
         this.provider = provider;
         this.amount = amount;
         this.created_at = created_at;

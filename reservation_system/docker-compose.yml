@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: reservation-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: registration_hotel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - reservation-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d registration_hotel"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MailHog for development (catches all emails)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: reservation-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+    networks:
+      - reservation-network
+
+  # Spring Boot Application
+  reservation-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reservation-app
+    restart: unless-stopped
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/registration_hotel
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 12345
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      
+      # JPA Configuration
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      
+      # Flyway Configuration
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+      SPRING_FLYWAY_LOCATIONS: "classpath:db/migration"
+      
+      # Mail Configuration (for MailHog)
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
+      SPRING_MAIL_USERNAME: user
+      SPRING_MAIL_PASSWORD: user
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST: "*"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTION_TIMEOUT: 5000
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT: 3000
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT: 5000
+      
+      # Application Configuration
+      SPRING_PROFILES_ACTIVE: docker
+      
+      # Stripe Configuration (set these in .env file)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
+      
+      # Invoice Configuration
+      APP_INVOICES_DIR: /app/invoices
+      
+      # JVM Configuration
+      JAVA_OPTS: "-Xmx1g -Xms512m"
+    ports:
+      - "8080:8080"
+    volumes:
+      - app_logs:/app/logs
+      - app_invoices:/app/invoices
+    networks:
+      - reservation-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
+  app_invoices:
+    driver: local
+
+networks:
+  reservation-network:
+    driver: bridge

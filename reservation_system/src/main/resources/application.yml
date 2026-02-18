@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none  # 🔑 Hibernate will auto-create/update tables (fixes "Cannot resolve table")
+      ddl-auto: none  # Using Flyway for schema management
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -44,3 +44,14 @@ spring:
           connection-timeout: 5000
           timeout: 3000
           write-timeout: 5000
+
+  # Stripe Configuration
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:sk_test_your_stripe_secret_key_here}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_your_webhook_secret_here}
+    publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_your_publishable_key_here}
+
+  # Invoice Configuration
+  app:
+    invoices:
+      dir: ${user.home}/reservation-system/invoices

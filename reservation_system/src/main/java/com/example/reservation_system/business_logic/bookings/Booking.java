@@ -1,11 +1,10 @@
 package com.example.reservation_system.business_logic.bookings;
-import com.example.reservation_system.business_logic.room.Room;
 import com.example.reservation_system.model.AppUser;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,21 +29,13 @@ public class Booking {
 
     private String currency;
 
-    private LocalDateTime check_in;
+    private  LocalDate  check_in;
 
-    private LocalDateTime check_out;
+    private LocalDate check_out;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "room_id" ,
-            nullable = false ,
-            referencedColumnName = "id"
-    )
-    private Room room;
+    private LocalDate created_at;
 
-    private LocalDateTime created_at;
-
-    private LocalDateTime updated_at;
+    private LocalDate updated_at;
 
     private Long payment_intent_id;
 
@@ -58,7 +49,7 @@ public class Booking {
     )
     private AppUser appUser;
 
-    public  Booking (BookingStatus status , BigDecimal total_amount ,  String currency ,  LocalDateTime check_in , LocalDateTime check_out ,LocalDateTime created_at , LocalDateTime updated_at , Long payment_intent_id , String invoice_no ) {
+    public  Booking (BookingStatus status , BigDecimal total_amount ,  String currency ,  LocalDate  check_in ,  LocalDate  check_out , LocalDate  created_at , LocalDate  updated_at , Long payment_intent_id , String invoice_no ) {
         this.status = status;
         this.check_in = check_in;
         this.check_out = check_out;
@@ -68,10 +59,6 @@ public class Booking {
         this.updated_at = updated_at;
         this.payment_intent_id = payment_intent_id;
         this.invoice_no = invoice_no;
-    }
-
-    public Room getRooom() {
-        return room;
     }
 
     public Collection<String> getTheBookingStatus(){

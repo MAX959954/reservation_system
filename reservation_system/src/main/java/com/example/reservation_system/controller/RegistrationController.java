@@ -4,7 +4,9 @@ import com.example.reservation_system.model.AppUser;
 import com.example.reservation_system.model.AppUserRepository;
 import com.example.reservation_system.model.AppUserService;
 import com.example.reservation_system.registration.EmailService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +32,8 @@ public class RegistrationController {
     }
 
     @PostMapping(value = "/req/signup", consumes = "application/json")
-    public AppUser createUser(@RequestBody AppUser appUser) {
+    @PreAuthorize("permitAll()")
+    public AppUser createUser(@Valid @RequestBody AppUser appUser) {
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         return appUserRepository.save(appUser);
     }

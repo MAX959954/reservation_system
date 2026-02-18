@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -30,11 +31,17 @@ public class RegistrationService {
         String token = appUserService.signUpUser(
                 new AppUser(
                         registrationRequest.getUsername(),
+                        registrationRequest.getUsername(),
                         registrationRequest.getEmail(),
                         registrationRequest.getPassword(),
+                        LocalDate.now(),
                         AppUserRole.GUEST
                 )
         );
+
+        if (token == null) {
+            throw new IllegalStateException("Failed to generate confirmation token");
+        }
 
         String link = "http://localhost:8080/registration?token=" + token;
         emailService.send(registrationRequest.getEmail(),

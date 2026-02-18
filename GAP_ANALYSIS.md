@@ -266,6 +266,7 @@ The specification uses `LocalDate` for dates (night_date, check_in, check_out da
 
 ## 📋 IMPLEMENTATION CHECKLIST
 
+--- : COMPILTED
 ### Phase 1: Database & Schema (Sprint 1)
 - [ ] Switch from PostgreSQL to MySQL
 - [ ] Add Flyway dependency
@@ -275,6 +276,9 @@ The specification uses `LocalDate` for dates (night_date, check_in, check_out da
 - [ ] Add missing fields to `users` table
 - [ ] Remove `ddl-auto: update`, use Flyway only
 - [ ] Create seed data script (rooms + 365 days inventory)
+--- : COMPILTED
+
+
 
 ### Phase 2: Core Booking Logic (Sprint 2)
 - [ ] Implement transaction-safe `BookingService.createBooking()` with `FOR UPDATE`

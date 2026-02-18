@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "booking_nights")
@@ -38,10 +38,10 @@ public class Booking_nights {
 
     private Room room;
 
-    private LocalDateTime night_date;
+    private LocalDate night_date;
     private int price;
 
-    public Booking_nights(Booking booking, Room room, LocalDateTime night_date, int price) {
+    public Booking_nights(Booking booking, Room room, LocalDate night_date, int price) {
         this.booking = booking;
         this.room = room;
         this.night_date = night_date;

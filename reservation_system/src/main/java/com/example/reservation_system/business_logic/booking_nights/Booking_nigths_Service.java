@@ -2,7 +2,7 @@ package com.example.reservation_system.business_logic.booking_nights;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 public class Booking_nigths_Service {
@@ -17,7 +17,7 @@ public class Booking_nigths_Service {
                 .orElseThrow( ()-> new IllegalStateException("not found by this price " + price));
     }
 
-    public Booking_nights findByNightDate (LocalDateTime night_date ) {
+    public Booking_nights findByNightDate (LocalDate night_date ) {
         return bookingNightsRepository.findByNightDate(night_date)
                 .orElseThrow(() -> new IllegalStateException("not found by this night date " + night_date ));
     }

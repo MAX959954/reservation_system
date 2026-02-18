@@ -1,7 +1,5 @@
 package com.example.reservation_system.registration;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -25,6 +23,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @SuppressWarnings("null")
     @Async
     public void send(String to, String subject, String text) {
         if (!StringUtils.hasText(to) || !StringUtils.hasText(subject) || !StringUtils.hasText(text)) {
